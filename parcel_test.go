@@ -24,7 +24,6 @@ func getTestParcel() Parcel {
 }
 
 func TestAddGetDelete(t *testing.T) {
-
 	db, err := sql.Open("sqlite", "tracker.db")
 	require.NoError(t, err)
 	defer db.Close()
@@ -38,9 +37,8 @@ func TestAddGetDelete(t *testing.T) {
 
 	retrievedParcel, err := store.Get(id)
 	require.NoError(t, err)
-	require.Equal(t, parcel.Client, retrievedParcel.Client)
-	require.Equal(t, parcel.Status, retrievedParcel.Status)
-	require.Equal(t, parcel.Address, retrievedParcel.Address)
+
+	require.Equal(t, parcel, retrievedParcel)
 
 	err = store.Delete(id)
 	require.NoError(t, err)
@@ -50,7 +48,6 @@ func TestAddGetDelete(t *testing.T) {
 }
 
 func TestSetAddress(t *testing.T) {
-
 	db, err := sql.Open("sqlite", "tracker.db")
 	require.NoError(t, err)
 	defer db.Close()
@@ -67,11 +64,11 @@ func TestSetAddress(t *testing.T) {
 
 	retrievedParcel, err := store.Get(id)
 	require.NoError(t, err)
-	require.Equal(t, newAddress, retrievedParcel.Address)
+	parcel.Address = newAddress
+	require.Equal(t, parcel, retrievedParcel)
 }
 
 func TestSetStatus(t *testing.T) {
-
 	db, err := sql.Open("sqlite", "tracker.db")
 	require.NoError(t, err)
 	defer db.Close()
@@ -88,11 +85,11 @@ func TestSetStatus(t *testing.T) {
 
 	retrievedParcel, err := store.Get(id)
 	require.NoError(t, err)
-	require.Equal(t, newStatus, retrievedParcel.Status)
+	parcel.Status = newStatus
+	require.Equal(t, parcel, retrievedParcel)
 }
 
 func TestGetByClient(t *testing.T) {
-
 	db, err := sql.Open("sqlite", "tracker.db")
 	require.NoError(t, err)
 	defer db.Close()
@@ -122,9 +119,8 @@ func TestGetByClient(t *testing.T) {
 	require.Equal(t, len(parcels), len(storedParcels))
 
 	for _, parcel := range storedParcels {
-		expectedParcel := parcelMap[parcel.Number]
-		require.Equal(t, expectedParcel.Client, parcel.Client)
-		require.Equal(t, expectedParcel.Status, parcel.Status)
-		require.Equal(t, expectedParcel.Address, parcel.Address)
+		expectedParcel, exists := parcelMap[parcel.Number]
+		require.True(t, exists)
+		require.Equal(t, expectedParcel, parcel)
 	}
 }
