@@ -38,6 +38,7 @@ func TestAddGetDelete(t *testing.T) {
 	retrievedParcel, err := store.Get(id)
 	require.NoError(t, err)
 
+	parcel.Number = id
 	require.Equal(t, parcel, retrievedParcel)
 
 	err = store.Delete(id)
@@ -65,6 +66,7 @@ func TestSetAddress(t *testing.T) {
 	retrievedParcel, err := store.Get(id)
 	require.NoError(t, err)
 	parcel.Address = newAddress
+	parcel.Number = id
 	require.Equal(t, parcel, retrievedParcel)
 }
 
@@ -86,6 +88,7 @@ func TestSetStatus(t *testing.T) {
 	retrievedParcel, err := store.Get(id)
 	require.NoError(t, err)
 	parcel.Status = newStatus
+	parcel.Number = id
 	require.Equal(t, parcel, retrievedParcel)
 }
 
